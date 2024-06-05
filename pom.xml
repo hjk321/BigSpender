@@ -5,7 +5,7 @@
    <version>1.0-SNAPSHOT</version>
    <packaging>jar</packaging>
    <name>BigSpender</name>
-   <url>https://www.spigotmc.org/resources/authors/hjk321.170106/</url>
+   <url>https://hangar.papermc.io/hjk321</url>
    <description>Allows players to run commands with shorthand money values as arguments.</description>
    <build>
        <finalName>${project.artifactId}-${project.version}</finalName>

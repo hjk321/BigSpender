@@ -58,6 +58,7 @@ public class CommandPreprocessor implements Listener {
 
         // Try to match input to a command entry in the config.
         // We attempt matches in reverse order (most array elements to least) for subcommand support.
+        // TODO: Not case sensitive
         String command = null;
         for (int i = split.length; i > 0; i--) {
             String testCommand = String.join(" ", Arrays.copyOf(split, i)).toLowerCase();
@@ -76,11 +77,12 @@ public class CommandPreprocessor implements Listener {
         List<Integer> argNums = config.commands.get(command);
 
         if (config.verbose) {
-            String argNumsString = "";
+            String argNumsString = "[";
             for (int n : argNums) {
                 argNumsString += String.valueOf(n) + " ";
             }
-            logVerbose("The following ArgNums will be processed: " + argNumsString.trim());
+            argNumsString = argNumsString.trim() + "]";
+            logVerbose("The following ArgNums will be processed: " + argNumsString);
         }
 
         for (int argNum : argNums) {
