@@ -26,7 +26,7 @@ public class CommandPreprocessor implements Listener {
 
     @EventHandler
     public void preprocess(PlayerCommandPreprocessEvent e) {
-        logVerbose("-------------\nProcessing " + e.getPlayer().getName() + "'s command \"" + e.getMessage() + "\":");
+        logVerbose("Processing " + e.getPlayer().getName() + "'s command \"" + e.getMessage() + "\":");
 
         if (e.isCancelled()) {
             logVerbose("Command has been cancelled by another plugin. Won't process.");
@@ -94,7 +94,7 @@ public class CommandPreprocessor implements Listener {
             }
             BigDecimal number = new BigDecimal(matcher.group(1)); // should never fail due to the regex earlier
             String suffix = matcher.group(2);
-            logVerbose("Case-sensitivity is " + (config.caseSensitive ? "on" : "off"));
+            logVerbose("Suffix case-sensitivity is " + (config.caseSensitive ? "on" : "off"));
             if (!config.caseSensitive)
                 suffix = suffix.toLowerCase();
             BigDecimal multiplier = config.abbreviations.get(suffix);
@@ -104,17 +104,19 @@ public class CommandPreprocessor implements Listener {
                 continue;
             }
             String newNumString = number.multiply(multiplier).toPlainString();
-            split[argNum] = newNumString;
             logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[argNum] 
-                    + "\" was expanded to the number " + newNumString);
+                + "\" was expanded to the number " + newNumString);
+            split[argNum] = newNumString;
         }
 
-        // Join the split back together and replace the original message.
+        // Join the split back together and replace the original message if it differs.
         String newMessage = String.join(" ", split);
         if (leadingSlash)
             newMessage = "/" + newMessage;
-        e.setMessage(newMessage);
-        logVerbose("Final command was \"" + newMessage + "\"");
+        if (e.getMessage().hashCode() != newMessage.hashCode()) {
+            e.setMessage(newMessage);
+            log.info("Command was expanded to \"" + newMessage + "\"");
+        }
     }
 
     private void logVerbose(String msg) {

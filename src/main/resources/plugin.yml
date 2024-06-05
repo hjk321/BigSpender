@@ -3,7 +3,7 @@ version: ${project.version}
 main: com.hjk321.bigspender.BigSpender
 author: hjk321
 description: ${project.description}
-api-version: 1.8 # Uses bukkit api, compatible with everything
+api-version: 1.13 # Uses bukkit api, compatible with all versions
 website: ${project.url}
 permissions:
   bigspender.use:
