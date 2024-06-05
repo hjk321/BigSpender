@@ -34,7 +34,7 @@ public class Config {
             }
             String suffix = split[0];
             // TODO - confirm suffix only letters
-            if (this.caseSensitive)
+            if (!this.caseSensitive)
                 suffix = suffix.toLowerCase();
             if (this.abbreviations.containsKey(suffix)) {
                 log.warning("CONFIG WARNING: Abbreviation \"" + line + "\" skipped. "

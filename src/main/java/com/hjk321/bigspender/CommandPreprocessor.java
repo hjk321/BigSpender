@@ -74,11 +74,15 @@ public class CommandPreprocessor implements Listener {
 
         // Process each argument
         List<Integer> argNums = config.commands.get(command);
-        String argNumsString = "";
-        for (int n : argNums) {
-            argNumsString += String.valueOf(n) + " ";
+
+        if (config.verbose) {
+            String argNumsString = "";
+            for (int n : argNums) {
+                argNumsString += String.valueOf(n) + " ";
+            }
+            logVerbose("The following ArgNums will be processed: " + argNumsString.trim());
         }
-        logVerbose("The following argument numbers will be processed: " + argNumsString.trim());
+
         for (int argNum : argNums) {
             if (argNum <= 0 || argNum >= split.length) {
                 logVerbose("ArgNum " + String.valueOf(argNum) + " skipped, not in input.");
