@@ -107,7 +107,7 @@ public class CommandPreprocessor implements Listener {
                     + "\" skipped, suffix \"" + suffix + "\" not recognized.");
                 continue;
             }
-            String newNumString = number.multiply(multiplier).toPlainString();
+            String newNumString = number.multiply(multiplier).stripTrailingZeros().toPlainString();
             logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[argNum] 
                 + "\" was expanded to the number " + newNumString);
             split[argNum] = newNumString;
