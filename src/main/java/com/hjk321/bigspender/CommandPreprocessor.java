@@ -58,12 +58,13 @@ public class CommandPreprocessor implements Listener {
 
         // Try to match input to a command entry in the config.
         // We attempt matches in reverse order (most array elements to least) for subcommand support.
-        // TODO: Not case sensitive
         String command = null;
+        int argNumOffset = 0;
         for (int i = split.length; i > 0; i--) {
             String testCommand = String.join(" ", Arrays.copyOf(split, i)).toLowerCase();
             if (config.commands.containsKey(testCommand)) {
                 command = testCommand;
+                argNumOffset = i - 1;
                 break;
             }
         }
@@ -73,9 +74,8 @@ public class CommandPreprocessor implements Listener {
         }
         logVerbose("Matched input to command entry \"" + command + "\".");
 
-        // Process each argument
+        
         List<Integer> argNums = config.commands.get(command);
-
         if (config.verbose) {
             String argNumsString = "[";
             for (int n : argNums) {
@@ -85,16 +85,18 @@ public class CommandPreprocessor implements Listener {
             logVerbose("The following ArgNums will be processed: " + argNumsString);
         }
 
+        // Process each argument
         for (int argNum : argNums) {
-            if (argNum <= 0 || argNum >= split.length) {
+            int index = argNum + argNumOffset;
+            if (index <= 0 || index >= split.length) {
                 logVerbose("ArgNum " + String.valueOf(argNum) + " skipped, not in input.");
                 continue;
             }
 
             // Get the number and the suffix if the argument has it
-            Matcher matcher = pattern.matcher(split[argNum]);
+            Matcher matcher = pattern.matcher(split[index]);
             if (!matcher.matches()) {
-                logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[argNum] 
+                logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[index] 
                     + "\" skipped, not a number plus a suffix.");
                 continue;
             }
@@ -105,14 +107,14 @@ public class CommandPreprocessor implements Listener {
                 suffix = suffix.toLowerCase();
             BigDecimal multiplier = config.abbreviations.get(suffix);
             if (multiplier == null) {
-                logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[argNum] 
+                logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[index] 
                     + "\" skipped, suffix \"" + suffix + "\" not recognized.");
                 continue;
             }
             String newNumString = number.multiply(multiplier).stripTrailingZeros().toPlainString();
-            logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[argNum] 
+            logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[index] 
                 + "\" was expanded to the number " + newNumString);
-            split[argNum] = newNumString;
+            split[index] = newNumString;
         }
 
         // Join the split back together and replace the original message if it differs.
@@ -122,6 +124,8 @@ public class CommandPreprocessor implements Listener {
         if (e.getMessage().hashCode() != newMessage.hashCode()) {
             e.setMessage(newMessage);
             log.info("Command was expanded to \"" + newMessage + "\"");
+        } else {
+            logVerbose("The final command was unchanged from the original");
         }
     }
 

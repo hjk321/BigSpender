@@ -1,13 +1,14 @@
 # This is where you define your abbreviations. Should be a suffix followed by a multiplier.
 # The suffix MUST be letters only, otherwise the plugin will reject it.
 # Example format - "k 1000". Also supports exponential notation. Example - "M 1e6"
-# NOTE: BigSpender can support nearly-infinite large numbers because it uses Java's BigDecimal.
+# NOTE: BigSpender can support nearly-infinite large numbers.
 # However, many economy plugins only allow maximum balances of $10T or so.
 abbreviations:
   - "k 1000"
   - "M 1000000"
   - "B 1000000000"
   - "T 1000000000000"
+  - "Q 1e15"
   
 # Are the above abbreviations case sensitive?
 case-sensitive: false
@@ -15,17 +16,19 @@ case-sensitive: false
 # Add your commands, along with the argument number(s) that we should substitute, seperated by spaces.
 # The arguments start from 1, so if you want to substitute the fifth argument in the "foo" command,
 # you would add "foo 5". If you ALSO want the second argument to be substituted, you'd do "foo 2 5".
-# You can also specify subcommands such as the "auc bid" example below. 
-# Subcommands still count as arguments for the purposes of the numbers that come after.
 # These entries are always case insensitive when matching to user input.
+# You can also specify subcommands such as the "auc bid" example below. 
+# The argument numbers start counting after the subcommand like you'd expect.
+# Subcommands are matched longest-first, so "foo bar baz" would match before "foo bar", which matches before "foo"
 # IMPORTANT: If a command has multiple aliases, you need to add each one separately. (e.g. "auc" and "auction")
 commands:
-  - "pay 2" # /pay jeb_ 1.337B
-  - "eco 3" # /eco give jeb_ 3.5T
-  - "auc bid 2" # /auc bid 12k
-  - "auction bid 2" # /auction bid 12k
-  - "auc start 3" # /auc start 64 7.2M
-  - "auction start 3" # /auc start 64 7.2M
+  - "pay 2" # "/pay Steve 1.337B"
+  - "eco 3" # "/eco give Alex 3.5T" (this entry also works for "take"; "reset" has no third argument)
+  - "economy 3" # alias of eco
+  - "auc bid 1" # "/auc bid 12k"
+  - "auction bid 1" # alias of auc
+  - "auc start 2" # "/auc start 64 7.2M"
+  - "auction start 2" # alias of auc
 
 # Prints extra info to the console when the plugin processes a command.
 # Useful for figuring out problems with your config. Required if asking for support.

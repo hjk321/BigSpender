@@ -28,19 +28,24 @@ public class Config {
             line = line.trim();
             String[] split = line.split(" ");
             if (split.length != 2) {
-                log.warning("CONFIG WARNING: Abbreviation \"" + line + "\" skipped. "
+                log.warning("CONFIG WARNING: Abbreviation line \"" + line + "\" skipped. "
                     + "Must be a suffix and multiplier value seperated by a space.");
                 continue;
             }
             String suffix = split[0];
-            // TODO - confirm suffix only letters
             if (!this.caseSensitive)
                 suffix = suffix.toLowerCase();
+            if (!suffix.matches("[a-zA-Z]+")) {
+                log.warning("CONFIG WARNING: Abbreviation \"" + line + "\" skipped. "
+                    + "Suffix \"" + suffix + "\" must be all letters.");
+                continue;
+            }
             if (this.abbreviations.containsKey(suffix)) {
                 log.warning("CONFIG WARNING: Abbreviation \"" + line + "\" skipped. "
                     + "Suffix \"" + suffix + "\" already exists.");
                 continue;
             }
+
             BigDecimal multiplier;
             try {
                 multiplier = new BigDecimal(split[1]);
