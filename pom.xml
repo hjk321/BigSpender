@@ -2,10 +2,10 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>com.hjk321</groupId>
    <artifactId>bigspender</artifactId>
-   <version>1.0-SNAPSHOT</version>
+   <version>1.0</version>
    <packaging>jar</packaging>
    <name>BigSpender</name>
-   <url>https://hangar.papermc.io/hjk321</url>
+   <url>https://hangar.papermc.io/hjk321/BigSpender</url>
    <description>Allows players to run commands with shorthand money values as arguments.</description>
    <build>
        <finalName>${project.artifactId}-${project.version}</finalName>
