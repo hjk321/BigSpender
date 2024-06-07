@@ -8,3 +8,6 @@ For more information, see https://hangar.papermc.io/hjk321/BigSpender
 # Building
 
 To build the jar, run "mvn package" in the root directory.
+
+### Has this ever happen to you? Not anymore with BigSpender.
+![](https://github.com/hjk321/BigSpender/blob/main/contrived-scenario.png)
