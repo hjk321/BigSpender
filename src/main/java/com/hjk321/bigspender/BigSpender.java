@@ -6,13 +6,18 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.math.BigDecimal;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BigSpender extends JavaPlugin {
-    
+    private static final int BSTATS_ID = 22381;
+    private static final Pattern numberPattern = Pattern.compile("^(?=.*\\d)(\\d*\\.?\\d*)$");
+    private static final Pattern abbreviationPattern = Pattern.compile("^(?=.*\\d)(\\d*\\.?\\d*)([a-zA-Z]+)$");
+
     protected Config config;
     private Listener preprocessor;
-    private static final int BSTATS_ID = 22381;
     private Metrics metrics;
     private PlaceholderManager placeholderManager;
     
@@ -59,5 +64,41 @@ public class BigSpender extends JavaPlugin {
             placeholderManager.unregister();
         metrics.shutdown();
         this.getLogger().info("Disabled!");
+    }
+
+    protected void logVerbose(String msg) {
+        if (config.verbose)
+            this.getLogger().info("VERBOSE: " + msg);
+    }
+
+    protected BigDecimal parseAbbreviation(String abbreviation) {
+        // Check if already pure number
+        Matcher matcher = numberPattern.matcher(abbreviation);
+        if (matcher.matches()) {
+            logVerbose("Abbreviation \"" + abbreviation + "\" is already a plain number with no suffix");
+            return new BigDecimal(matcher.group(1)).stripTrailingZeros(); // should never fail due to the regex earlier
+        }
+        // Get the number and the suffix if the argument has it
+        matcher = abbreviationPattern.matcher(abbreviation);
+        if (!matcher.matches()) {
+            logVerbose("Abbreviation \"" + abbreviation + "\" could not be parsed, not a number plus a suffix.");
+            return null;
+        }
+        BigDecimal number = new BigDecimal(matcher.group(1)); // should never fail due to the regex earlier
+        String suffix = matcher.group(2);
+
+        logVerbose("Suffix case-sensitivity is " + (config.caseSensitive ? "on" : "off"));
+        if (!config.caseSensitive)
+            suffix = suffix.toLowerCase();
+
+        BigDecimal multiplier = config.abbreviations.get(suffix);
+        if (multiplier == null) {
+            logVerbose("Abbreviation \"" + abbreviation
+                    + "\" could not be parsed, suffix \"" + suffix + "\" not recognized.");
+            return null;
+        }
+        number = number.multiply(multiplier).stripTrailingZeros();
+        logVerbose("Parsed \"" + abbreviation + "\" into " + number.toPlainString());
+        return number;
     }
 }
