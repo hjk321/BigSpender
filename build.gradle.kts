@@ -21,16 +21,19 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
     compileOnly("org.bukkit:bukkit:1.8-R0.1-SNAPSHOT")
     implementation("org.bstats:bstats-bukkit:3.0.2")
+    compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 bukkit {
     main = "com.hjk321.bigspender.BigSpender"
     apiVersion = "1.13"
+    softDepend = listOf("PlaceholderAPI")
 
     permissions {
         register("bigspender.use") {
