@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Config {
     Map<String, List<Integer>> commands = new HashMap<>();
     Map<String, BigDecimal> abbreviations = new HashMap<>();
-    boolean caseSensitive = false, verbose = false, valid = true;
+    boolean caseSensitive, verbose, valid = true;
 
     public Config(BigSpender plugin) {
         FileConfiguration config = plugin.getConfig();
@@ -72,7 +72,7 @@ public class Config {
             }
 
             // Get command text (minus arg numbers).
-            String command = "";
+            StringBuilder command = new StringBuilder();
             int i = 0;
             while (i < split.length) {
                 try {
@@ -80,17 +80,17 @@ public class Config {
                     // Loop will only break if we've reached our first number
                     break;
                 } catch (NullPointerException | NumberFormatException ex) {
-                    command += split[i] + " ";
+                    command.append(split[i]).append(" ");
                     i++;
                 }
             }
-            command = command.trim().toLowerCase();
-            if (command.equals("")) {
+            command = new StringBuilder(command.toString().trim().toLowerCase());
+            if (command.toString().isEmpty()) {
                 log.warning("CONFIG WARNING: Command entry \"" + line + "\" skipped "
                     + "because there was no command text, only argument numbers.");
                 continue;
             }
-            if (commands.containsKey(command)) {
+            if (commands.containsKey(command.toString())) {
                 log.warning("CONFIG WARNING: Command entry \"" + line + "\" skipped "
                     + "because \"" + command + "\" has already been registered.");
                 continue;
@@ -119,7 +119,7 @@ public class Config {
                 continue;
             }
 
-            commands.put(command, argNums);
+            commands.put(command.toString(), argNums);
         }
         if (commands.isEmpty()) {
             log.severe("CONFIG ERROR: Commands list is empty, or has no valid entries.");

@@ -14,10 +14,10 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 public class CommandPreprocessor implements Listener {
 
     // Matches a number, then a suffix, exactly once
-    private static Pattern pattern = Pattern.compile("^(\\d+\\.?\\d*)([a-zA-Z]+)$");
+    private static final Pattern pattern = Pattern.compile("^(\\d+\\.?\\d*)([a-zA-Z]+)$");
 
-    private Config config;
-    private Logger log;
+    private final Config config;
+    private final Logger log;
 
     public CommandPreprocessor(BigSpender plugin) {
         this.config = plugin.config;
@@ -25,6 +25,7 @@ public class CommandPreprocessor implements Listener {
     }
 
     @EventHandler
+    @SuppressWarnings("unused") // Registered by Listener
     public void preprocess(PlayerCommandPreprocessEvent e) {
         logVerbose("Processing " + e.getPlayer().getName() + "'s command \"" + e.getMessage() + "\":");
 
@@ -49,7 +50,7 @@ public class CommandPreprocessor implements Listener {
         boolean leadingSlash = false;
         if (split[0].charAt(0) == '/') {
             leadingSlash = true;
-            if (split[0].length() <= 1) {
+            if (split[0].length() == 1) {
                 logVerbose("The command was only a slash character. Won't process.");
                 return;
             }
@@ -77,11 +78,11 @@ public class CommandPreprocessor implements Listener {
         
         List<Integer> argNums = config.commands.get(command);
         if (config.verbose) {
-            String argNumsString = "[";
+            StringBuilder argNumsBuilder = new StringBuilder("[");
             for (int n : argNums) {
-                argNumsString += String.valueOf(n) + " ";
+                argNumsBuilder.append(n).append(" ");
             }
-            argNumsString = argNumsString.trim() + "]";
+            String argNumsString = argNumsBuilder.toString().trim() + "]";
             logVerbose("The following ArgNums will be processed: " + argNumsString);
         }
 
@@ -89,14 +90,14 @@ public class CommandPreprocessor implements Listener {
         for (int argNum : argNums) {
             int index = argNum + argNumOffset;
             if (index <= 0 || index >= split.length) {
-                logVerbose("ArgNum " + String.valueOf(argNum) + " skipped, not in input.");
+                logVerbose("ArgNum " + argNum + " skipped, not in input.");
                 continue;
             }
 
             // Get the number and the suffix if the argument has it
             Matcher matcher = pattern.matcher(split[index]);
             if (!matcher.matches()) {
-                logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[index] 
+                logVerbose("ArgNum " + argNum + " with value \"" + split[index]
                     + "\" skipped, not a number plus a suffix.");
                 continue;
             }
@@ -107,12 +108,12 @@ public class CommandPreprocessor implements Listener {
                 suffix = suffix.toLowerCase();
             BigDecimal multiplier = config.abbreviations.get(suffix);
             if (multiplier == null) {
-                logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[index] 
+                logVerbose("ArgNum " + argNum + " with value \"" + split[index]
                     + "\" skipped, suffix \"" + suffix + "\" not recognized.");
                 continue;
             }
             String newNumString = number.multiply(multiplier).stripTrailingZeros().toPlainString();
-            logVerbose("ArgNum " + String.valueOf(argNum) + " with value \"" + split[index] 
+            logVerbose("ArgNum " + argNum + " with value \"" + split[index]
                 + "\" was expanded to the number " + newNumString);
             split[index] = newNumString;
         }
