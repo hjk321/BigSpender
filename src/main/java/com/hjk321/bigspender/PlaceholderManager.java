@@ -38,6 +38,9 @@ class PlaceholderManager extends PlaceholderExpansion {
         String subParams = getStringAfter(params,"parse_");
         if (subParams != null)
             return doParse(player, subParams);
+        subParams = getStringAfter(params,"format_");
+        if (subParams != null)
+            return doFormat(player, subParams);
 
         return null;
     }
@@ -54,5 +57,16 @@ class PlaceholderManager extends PlaceholderExpansion {
         if (parse != null)
             return parse.toPlainString();
         return null;
+    }
+
+    private @Nullable String doFormat(OfflinePlayer player, @NotNull String params) {
+        String input = PlaceholderAPI.setBracketPlaceholders(player, params);
+        BigDecimal number;
+        try {
+            number = new BigDecimal(input);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+        return plugin.formatNumber(number);
     }
 }

@@ -5,9 +5,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,5 +104,23 @@ public class BigSpender extends JavaPlugin {
         number = number.multiply(multiplier).stripTrailingZeros();
         logVerbose("Parsed \"" + abbreviation + "\" into " + number.toPlainString());
         return number;
+    }
+
+    private static final BigDecimal ONE = new BigDecimal(1);
+    protected @NotNull String formatNumber(@NotNull BigDecimal num) {
+        AtomicReference<BigDecimal> multiplier = new AtomicReference<>(ONE);
+        AtomicReference<String> abbreviation = new AtomicReference<>("");
+        AtomicReference<Boolean> found = new AtomicReference<>(false);
+        this.config.multipliers.forEach((mul, abbr) -> { // TODO iterate over keys, this is probably overengineered
+            if (found.get())
+                return;
+            if (num.compareTo(mul) > 0) {
+                multiplier.set(mul);
+                abbreviation.set(abbr);
+                found.set(true);
+            }
+        });
+        return num.divide(multiplier.get(), 3, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+                + abbreviation.get();
     }
 }

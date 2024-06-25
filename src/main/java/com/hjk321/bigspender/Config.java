@@ -61,7 +61,7 @@ class Config {
             }
 
             this.abbreviations.put(suffix, multiplier);
-            this.multipliers.put(multiplier, suffix);
+            this.multipliers.put(multiplier, split[0]);
         }
         if (abbreviations.isEmpty()) {
             log.severe("CONFIG ERROR: Abbreviations list is empty, or has no valid entries.");
