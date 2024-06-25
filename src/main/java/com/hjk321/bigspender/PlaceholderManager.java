@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 
-public class PlaceholderManager extends PlaceholderExpansion {
+class PlaceholderManager extends PlaceholderExpansion {
     private final BigSpender plugin;
 
     public PlaceholderManager(BigSpender plugin) {

@@ -68,7 +68,7 @@ public class BigSpender extends JavaPlugin {
     }
 
     protected void logVerbose(String msg) {
-        if (config.verbose)
+        if (config != null && config.verbose)
             this.getLogger().info("VERBOSE: " + msg);
     }
 

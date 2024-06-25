@@ -1,17 +1,17 @@
 package com.hjk321.bigspender;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class Config {
+class Config {
     Map<String, List<Integer>> commands = new HashMap<>();
+    // List of abbreviations with their corresponding multipliers. Used for parsing.
     Map<String, BigDecimal> abbreviations = new HashMap<>();
+    // List of multipliers with their corresponding abbreviations. Used for formatting. Sorted in descending order.
+    SortedMap<BigDecimal, String> multipliers = new TreeMap<>(Collections.reverseOrder());
     boolean caseSensitive, verbose, valid = true;
 
     public Config(BigSpender plugin) {
@@ -23,7 +23,7 @@ public class Config {
         // Case Sensitive?
         this.caseSensitive = config.getBoolean("case-sensitive", false);
 
-        // Abbreviations
+        // Abbreviations and Values
         for (String line : config.getStringList("abbreviations")) {
             line = line.trim();
             String[] split = line.split(" ");
@@ -35,7 +35,7 @@ public class Config {
             String suffix = split[0];
             if (!this.caseSensitive)
                 suffix = suffix.toLowerCase();
-            if (!suffix.matches("[a-zA-Z]+")) {
+            if (!suffix.matches("^[a-zA-Z]+$")) {
                 log.warning("CONFIG WARNING: Abbreviation \"" + line + "\" skipped. "
                     + "Suffix \"" + suffix + "\" must be all letters.");
                 continue;
@@ -54,7 +54,14 @@ public class Config {
                     + "Multiplier is not a valid number.");
                 continue;
             }
+            if (this.multipliers.containsKey(multiplier)) {
+                log.warning("CONFIG WARNING: Abbreviation \"" + line + "\" skipped. "
+                        + "Multiplier \"" + split[1] + "\" already exists under a different suffix.");
+                continue;
+            }
+
             this.abbreviations.put(suffix, multiplier);
+            this.multipliers.put(multiplier, suffix);
         }
         if (abbreviations.isEmpty()) {
             log.severe("CONFIG ERROR: Abbreviations list is empty, or has no valid entries.");

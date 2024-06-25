@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-public class CommandPreprocessor implements Listener {
+class CommandPreprocessor implements Listener {
     private final BigSpender plugin;
 
     public CommandPreprocessor(BigSpender plugin) {
