@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.logging.Level;
@@ -13,8 +14,8 @@ import java.util.regex.Pattern;
 
 public class BigSpender extends JavaPlugin {
     private static final int BSTATS_ID = 22381;
-    private static final Pattern numberPattern = Pattern.compile("^(?=.*\\d)(\\d*\\.?\\d*)$");
-    private static final Pattern abbreviationPattern = Pattern.compile("^(?=.*\\d)(\\d*\\.?\\d*)([a-zA-Z]+)$");
+    private static final Pattern numberPattern = Pattern.compile("^(\\d*?\\.?\\d+)$");
+    private static final Pattern abbreviationPattern = Pattern.compile("^(\\d*?\\.?\\d+)([a-zA-Z]+)$");
 
     protected Config config;
     private Listener preprocessor;
@@ -71,7 +72,7 @@ public class BigSpender extends JavaPlugin {
             this.getLogger().info("VERBOSE: " + msg);
     }
 
-    protected BigDecimal parseAbbreviation(String abbreviation) {
+    protected @Nullable BigDecimal parseAbbreviation(String abbreviation) {
         // Check if already pure number
         Matcher matcher = numberPattern.matcher(abbreviation);
         if (matcher.matches()) {

@@ -1,8 +1,10 @@
 package com.hjk321.bigspender;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 
@@ -29,20 +31,28 @@ public class PlaceholderManager extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, @NotNull String params) {
+    public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
         params = params.trim().toLowerCase();
         if (params.isEmpty())
             return null;
+        String subParams = getStringAfter(params,"parse_");
+        if (subParams != null)
+            return doParse(player, subParams);
 
-        String[] split = params.split("_");
-        switch (split.length) {
-            case 2:
-                if (split[0].equals("parse")) {
-                    BigDecimal parse = plugin.parseAbbreviation(split[1]);
-                    if (parse != null)
-                        return parse.toPlainString();
-                }
-            default: return null;
-        }
+        return null;
+    }
+
+    private @Nullable String getStringAfter(@NotNull String input, String startsWith) {
+        if (!input.startsWith(startsWith))
+            return null;
+        return input.substring(startsWith.length());
+    }
+
+    private @Nullable String doParse(OfflinePlayer player, @NotNull String params) {
+        String input = PlaceholderAPI.setBracketPlaceholders(player, params);
+        BigDecimal parse = plugin.parseAbbreviation(input);
+        if (parse != null)
+            return parse.toPlainString();
+        return null;
     }
 }
