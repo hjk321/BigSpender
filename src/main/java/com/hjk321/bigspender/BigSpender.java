@@ -19,7 +19,7 @@ public class BigSpender extends JavaPlugin {
     private static final Pattern numberPattern = Pattern.compile("^(\\d*?\\.?\\d+)$");
     private static final Pattern abbreviationPattern = Pattern.compile("^(\\d*?\\.?\\d+)([a-zA-Z]+)$");
 
-    protected Config config;
+    Config config;
     private Listener preprocessor;
     private Metrics metrics;
     private PlaceholderManager placeholderManager;
@@ -106,11 +106,11 @@ public class BigSpender extends JavaPlugin {
     }
 
     private static final BigDecimal ONE = new BigDecimal(1);
-    protected @NotNull String formatNumber(@NotNull BigDecimal num) {
+    protected @NotNull String formatNumber(@NotNull BigDecimal num, int scale) {
         for (BigDecimal mul : this.config.multipliers.keySet())
             if (num.compareTo(mul) >= 0)
-                return num.divide(mul, 3, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
+                return num.divide(mul, scale, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
                         + this.config.multipliers.get(mul);
-        return num.divide(ONE, 3, RoundingMode.DOWN).stripTrailingZeros().toPlainString();
+        return num.divide(ONE, scale, RoundingMode.DOWN).stripTrailingZeros().toPlainString();
     }
 }

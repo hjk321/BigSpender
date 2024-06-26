@@ -61,12 +61,30 @@ class PlaceholderManager extends PlaceholderExpansion {
 
     private @Nullable String doFormat(OfflinePlayer player, @NotNull String params) {
         String input = PlaceholderAPI.setBracketPlaceholders(player, params);
+        String[] split = input.split("_");
+        if (split.length > 2)
+            return null;
+
         BigDecimal number;
         try {
-            number = new BigDecimal(input);
+            number = new BigDecimal(split[0]);
         } catch (NumberFormatException ex) {
             return null;
         }
-        return plugin.formatNumber(number);
+
+        int scale;
+        if (split.length == 2) {
+            try {
+                scale = Integer.parseInt(split[1]);
+                if (scale < 0)
+                    return null;
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+        } else {
+            scale = 3;
+        }
+
+        return plugin.formatNumber(number, scale);
     }
 }
