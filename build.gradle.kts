@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.hjk321.bigspender"
-version = "1.1-SNAPSHOT"
+version = "1.1"
 description = "Allows players to run commands with shorthand money values as arguments."
 project.ext["author"] = "hjk321"
 project.ext["url"] = "https://hangar.papermc.io/hjk321/BigSpender"
