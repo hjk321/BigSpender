@@ -42,6 +42,9 @@ class PlaceholderManager extends PlaceholderExpansion {
         if (subParams != null)
             return doFormat(player, subParams);
 
+        // Attempt implicit format
+        if (!params.startsWith("_"))
+            return doFormat(player, params);
         return null;
     }
 
@@ -62,7 +65,7 @@ class PlaceholderManager extends PlaceholderExpansion {
     private @Nullable String doFormat(OfflinePlayer player, @NotNull String params) {
         String input = PlaceholderAPI.setBracketPlaceholders(player, params);
         String[] split = input.split("_");
-        if (split.length > 2)
+        if (split.length > 2 || input.endsWith("_"))
             return null;
 
         BigDecimal number;
