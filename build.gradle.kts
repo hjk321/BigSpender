@@ -6,7 +6,7 @@ plugins {
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
 }
 
-group = "com.hjk321.bigspender"
+group = "gg.hjk.bigspender"
 version = "1.1"
 description = "Allows players to run commands with shorthand money values as arguments."
 project.ext["author"] = "hjk321"
@@ -31,7 +31,7 @@ dependencies {
 }
 
 bukkit {
-    main = "com.hjk321.bigspender.BigSpender"
+    main = "gg.hjk.bigspender.BigSpender"
     apiVersion = "1.13"
     softDepend = listOf("PlaceholderAPI")
 
@@ -44,5 +44,5 @@ bukkit {
 }
 
 tasks.shadowJar {
-    relocate("org.bstats", "com.hjk321.bigspender.bstats")
+    relocate("org.bstats", "gg.hjk.bigspender.bstats")
 }

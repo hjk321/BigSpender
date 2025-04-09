@@ -1,4 +1,4 @@
-package com.hjk321.bigspender;
+package gg.hjk.bigspender;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;

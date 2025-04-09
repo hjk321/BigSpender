@@ -1,4 +1,4 @@
-package com.hjk321.bigspender;
+package gg.hjk.bigspender;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

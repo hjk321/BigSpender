@@ -1,4 +1,4 @@
-package com.hjk321.bigspender;
+package gg.hjk.bigspender;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
